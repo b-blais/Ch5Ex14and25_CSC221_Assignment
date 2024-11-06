@@ -21,22 +21,25 @@ there is no more data to read.
 
 #include <iostream>
 #include <string>
+#include <fstream>
 using namespace std;
 
-int validateNumber(int);
+void openFile();
+int flagValidation(string);
+int countLines();
+void closeFile();
+
+ifstream fileStreamObject;
 
 int main()
 {
-    int numberStudents;
-    cout << "How many students are in the class? \t";
-    cin >> numberStudents;
-    numberStudents = validateNumber(numberStudents);
+    openFile();
+    int numberStudents = countLines();
     string front = "z";
     string middle;
     string back = "a";
     for (int count = 0; count < numberStudents; count++) {
-        cout << "Enter a students name in lowercase: \t";
-        cin >> middle;
+        getline(fileStreamObject, middle);
         if (middle < front) {
             front = middle;
         }
@@ -44,18 +47,89 @@ int main()
             back = middle;
         }        
     }
-    cout << "The first student in line is " << front << endl;
-    cout << "The last student in line is " << back << endl;
+    cout << "\nThe first student in line is " << front << endl;
+    cout << "The last student in line is " << back << "\n" << endl;
+    closeFile();
     return 0;
 }
 
-int validateNumber(int inputNumber) {
-    while ((inputNumber < 1 && inputNumber > 25)) {
-        cout << "Please enter a number of students between 1 and 25 inclusive.\t";
-        cin.clear();
-        cin.ignore(INT_MAX, '\n');
-        cin >> inputNumber;
+void openFile() {
+    string fileName;
+    string localFileFlag;
+    bool fileFlag;
+    cout << "What is the name of the file you are opening? \t";
+    cin >> fileName;
+    cout << "Is the file you are trying to open in the same folder as this program? \t";
+    cin >> localFileFlag;
+    fileFlag = flagValidation(localFileFlag);
+    if (fileFlag == false) {
+        string filePath;
+        cout << "Please enter the path to the folder where the file you are trying to open is located.\n";
+        cout << "Use the following format:  " << R"(C:\Users\myname\Desktop)" << "\n";
+        cin >> filePath;
+        fileName = filePath + R"(\)" + fileName;
     }
-    return inputNumber;
+    if (fileFlag == true) {
+        cout << "Finding the file ... ";
+
+        fileStreamObject.open(fileName);
+        if (fileStreamObject) {
+            cout << "file open.\n";
+        }
+        else {
+            cout << "The file was not found or could not be opened. \n";
+            cout << "Please check to see if the file is in the correct folder and rerun the program. Exiting ...\n";
+            exit(0);
+        }
+    }
+    else {
+        cout << "Finding the file at the following at " << fileName << " ... ";
+        fileStreamObject.open(fileName);
+        if (fileStreamObject) {
+            cout << "file open.\n";
+        }
+        else {
+            cout << "the file was not found or could not be opened. \n";
+            cout << "Please check to see if the file is in the correct location and rerun the program. Exiting ...\n";
+            exit(0);
+        }
+    }
 }
-    
+
+int flagValidation(string input) {
+    int output = 2;
+    do {
+        if (input == "True" || input == "true" || input == "TRUE" ||
+            input == "Yes" || input == "yes" || input == "YES") {
+            output = 1;
+        }
+        else if (input == "False" || input == "false" || input == "FALSE" ||
+            input == "No" || input == "no" || input == "NO") {
+            output = 0;
+        }
+        else {
+            cout << R"(You must anwser either "true / false or yes / no" to continue.)" << endl;
+            cout << "Is the file you are trying to open in the same folder as this program?\t";
+            cin >> input;
+        }
+    } while (output != 0 && output != 1);
+    return output;
+}
+
+int countLines() {
+    int lineCount = 0;
+    string fileContents;
+    while (getline(fileStreamObject, fileContents)) {
+        lineCount += 1;
+    }
+    cout << "There are " << lineCount << " lines in this file.\n";
+    fileStreamObject.clear();
+    fileStreamObject.seekg(0, ios::beg);
+    return lineCount;
+}
+
+void closeFile() {
+    cout << "Closing file ...";
+    fileStreamObject.close();
+    cout << "File closed.";
+}
