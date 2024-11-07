@@ -35,10 +35,15 @@ int main()
 {
     openFile();
     int numberStudents = countLines();
-    string front = "z";
+    string front;
     string middle;
-    string back = "a";
+    string back;
     for (int count = 0; count < numberStudents; count++) {
+        if (count == 0) {
+            getline(fileStreamObject, front);
+            fileStreamObject.clear();
+            fileStreamObject.seekg(0, ios::beg);
+        }
         getline(fileStreamObject, middle);
         if (middle < front) {
             front = middle;
