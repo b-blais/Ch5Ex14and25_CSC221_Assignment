@@ -31,12 +31,13 @@ int main()
     cout << "How many students are in the class? \t";
     cin >> numberStudents;
     numberStudents = validateNumber(numberStudents);
-    string front = "z";
+    string front;
     string middle;
-    string back = "a";
+    string back;
     for (int count = 0; count < numberStudents; count++) {
         cout << "Enter a students name in lowercase: \t";
         cin >> middle;
+        front = middle;
         if (middle < front) {
             front = middle;
         }
