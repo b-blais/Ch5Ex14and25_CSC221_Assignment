@@ -35,9 +35,15 @@ int main()
     string middle;
     string back;
     for (int count = 0; count < numberStudents; count++) {
-        cout << "Enter a students name in lowercase: \t";
+        if (count == 0) {
+            cout << "Enter a students name in lowercase: \t";
+            cin >> middle;
+            front = middle;
+            back = middle;
+            continue;
+        }
+        cout << "Enter another students name in lowercase: \t";
         cin >> middle;
-        front = middle;
         if (middle < front) {
             front = middle;
         }
