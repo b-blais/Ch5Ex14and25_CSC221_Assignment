@@ -41,8 +41,8 @@ int main()
     for (int count = 0; count < numberStudents; count++) {
         if (count == 0) {
             getline(fileStreamObject, front);
-            fileStreamObject.clear();
-            fileStreamObject.seekg(0, ios::beg);
+            back = front;
+            continue;
         }
         getline(fileStreamObject, middle);
         if (middle < front) {
